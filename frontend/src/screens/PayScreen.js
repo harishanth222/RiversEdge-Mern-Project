@@ -5,11 +5,10 @@ import Loader from "../components/Loader";
 import { URL } from "../App";
 import Swal from "sweetalert2";
 import Filter from "../components/Filter";
-import * as XLSX from 'xlsx'; // Import the xlsx library
-
+import * as XLSX from 'xlsx';
 function PayScreen() {
     const [payments, setPayments] = useState([]);
-    const [filteredPayments, setFilteredPayments] = useState([]); // Store filtered payments separately
+    const [filteredPayments, setFilteredPayments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
     const [filterType, setFilterType] = useState("");
@@ -23,7 +22,7 @@ function PayScreen() {
                 const response = await axios.get(`${URL}/api/addPayment`);
                 if (response.data.length > 0) {
                     setPayments(response.data);
-                    setFilteredPayments(response.data); // Initialize filtered payments with all payments
+                    setFilteredPayments(response.data);
                     setLoading(false);
                 } else {
                     setLoading(false);
@@ -57,7 +56,7 @@ function PayScreen() {
                         "Your file has been deleted.",
                         "success"
                     );
-                    // Update both payments and filteredPayments
+
                     setPayments(payments.filter((payment) => payment._id !== id));
                     setFilteredPayments(
                         filteredPayments.filter((payment) => payment._id !== id)
@@ -70,7 +69,7 @@ function PayScreen() {
     };
 
     const handleFilter = () => {
-        // Apply filtering based on filterType and filterStatus
+
         const filtered = payments.filter((payment) => {
             if (
                 (filterType === "" || payment.department === filterType) &&
@@ -80,25 +79,25 @@ function PayScreen() {
             }
             return false;
         });
-        setFilteredPayments(filtered); // Update the filtered payments
+        setFilteredPayments(filtered);
     };
 
     const clearFilter = () => {
         setFilterType("");
         setFilterStatus("");
-        setFilteredPayments(payments); // Clear the filter by restoring the original payments
+        setFilteredPayments(payments);
     };
 
     const toggleFilter = () => {
-        setShowFilter(!showFilter); // Toggle the state variable
+        setShowFilter(!showFilter);
     };
 
-    // Add a function to handle real-time search
+
     const handleSearch = (e) => {
         const query = e.target.value.toLowerCase();
         setSearchQuery(query);
 
-        // Apply filtering if there's a search query, or reset to display all payments
+
         if (query !== "") {
             const filtered = payments.filter((payment) => {
                 const amountString = payment.amount ? payment.amount.toString() : "";
@@ -117,15 +116,13 @@ function PayScreen() {
             });
             setFilteredPayments(filtered);
         } else {
-            // Reset to display all payments
+
             setFilteredPayments(payments);
         }
     };
 
 
-    // Function to generate and download an Excel report
     const generateExcelReport = () => {
-        // Create a worksheet from filteredPayments
         Swal.fire({
             icon: 'Success',
             title: 'Download Started...',
@@ -133,28 +130,24 @@ function PayScreen() {
         })
         const ws = XLSX.utils.json_to_sheet(filteredPayments);
 
-        // Calculate the total amount
         const totalAmount = filteredPayments.reduce((total, payment) => {
             return total + parseFloat(payment.amount);
         }, 0);
 
-        // Add a row for the total amount
         XLSX.utils.sheet_add_json(
             ws,
             [{ "Payment-ID": "Total Amount", Amount: totalAmount }],
             {
                 skipHeader: true,
-                origin: -1, // Insert at the end of the worksheet
+                origin: -1,
             }
         )
             ;
 
 
-        // Create a workbook and add the worksheet
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Payments");
 
-        // Generate the Excel file and download it
         XLSX.writeFile(wb, "payment_report.xlsx");
     };
 
@@ -184,6 +177,7 @@ function PayScreen() {
                             onChange={handleSearch}
                             style={{ width: "150px" }}
                         />
+
                         <button
                             className="btn btnColour btn-primary ml-2 mr-5 float-right"
                             onClick={toggleFilter}
@@ -205,6 +199,7 @@ function PayScreen() {
                     </div>
                     <hr />
                     <br />
+
                     <div className="row mt-4">
                         <div className="col-md-12">
                             <table border={0} className="table mt-5">

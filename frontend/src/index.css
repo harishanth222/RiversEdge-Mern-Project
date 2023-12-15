@@ -416,3 +416,8 @@ tr:last-child td:last-child {
 #datepick {
   width: 18rem !important;
 }
+
+#sub {
+  width: 15% !important;
+  margin-left: 250px !important;
+}
